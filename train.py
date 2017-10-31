@@ -9,12 +9,26 @@ from os.path import isfile, join
 d = dict.fromkeys(string.ascii_uppercase,[])
 d1 = dict.fromkeys(string.digits,[])
 d.update(d1)
+inp=np.empty((1,1600))
+cnt=0
 for key in d.keys():
 	mypath = 'Classes/'+key+'/';
 	onlyfiles = [f for f in listdir(mypath) if isfile(join(mypath, f))]
+	#print(onlyfiles)
 	d[key] = onlyfiles
 for key in d.keys():
 	lst = []
 	for element in d[key]:
-		lst.append('Classes/'+key+'/'+ element)
+		temp_path='Classes/'+key+'/'+ element
+		lst.append(temp_path)
+		temp=cv2.imread(temp_path,0)
+		temp= cv2.resize(temp,(40,40),interpolation=cv2.INTER_CUBIC)
+		temp=temp.ravel()
+		inp=np.vstack((inp,temp))
+		print(inp.shape)
+	cnt+=1
+	print(cnt,key)
+
+
 	d[key] = lst
+print(inp.shape)
