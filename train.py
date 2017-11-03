@@ -6,11 +6,14 @@ from matplotlib import pyplot as plt
 import string
 from os import listdir
 from os.path import isfile, join
+import torch.utils.data as data_utils 
+
 d = dict.fromkeys(string.ascii_uppercase,[])
 d1 = dict.fromkeys(string.digits,[])
 d.update(d1)
 inp=np.empty((1,1600))
 cnt=0
+target=np.empty((1,1))
 for key in d.keys():
 	mypath = 'Classes/'+key+'/';
 	onlyfiles = [f for f in listdir(mypath) if isfile(join(mypath, f))]
@@ -25,10 +28,15 @@ for key in d.keys():
 		temp= cv2.resize(temp,(40,40),interpolation=cv2.INTER_CUBIC)
 		temp=temp.ravel()
 		inp=np.vstack((inp,temp))
-		print(inp.shape)
+		target=np.vstack((target,ord(key)))
+		#print(inp.shape,target.shape)
 	cnt+=1
-	print(cnt,key)
-
-
 	d[key] = lst
+
+
+print(inp.shape,target.shape,type(data_utils.TensorDataset))
+train = data_utils.TensorDataset(inp, target) 
+train_loader = data_utils.DataLoader(train, batch_size=50, shuffle=True)
+
+	
 print(inp.shape)
