@@ -58,11 +58,17 @@ for p in range (1, 1001):
 		# 	print (p);
 	lab = labels[p];
 	img1 = gimg[:,0:break_img[0]] 
+	img1= cv2.resize(img1,(40,40),interpolation=cv2.INTER_CUBIC)
 	img2 = gimg[:,break_img[0]:break_img[1]]
+	img2= cv2.resize(img2,(40,40),interpolation=cv2.INTER_CUBIC)
 	img3 = gimg[:,break_img[1]:break_img[2]]
+	img3= cv2.resize(img3,(40,40),interpolation=cv2.INTER_CUBIC)
 	img4 = gimg[:,break_img[2]:break_img[3]]
+	img4= cv2.resize(img4,(40,40),interpolation=cv2.INTER_CUBIC)
 	img5 = gimg[:,break_img[3]:break_img[4]]
+	img5= cv2.resize(img5,(40,40),interpolation=cv2.INTER_CUBIC)
 	img6 = gimg[:,break_img[4]:thresh1.shape[1]]
+	img6= cv2.resize(img6,(40,40),interpolation=cv2.INTER_CUBIC)
 	path  = '/home/pratik/MLT_PROJECT/Classes/'+lab[0]+'/'+str(d[lab[0]])+'.jpg'
 	d[lab[0]] += 1
 	cv2.imwrite(path,img1)
