@@ -6,25 +6,57 @@ from matplotlib import pyplot as plt
 import string
 from os import listdir
 from os.path import isfile, join
-import torch.utils.data as data_utils 
 import torch
 import torchvision
 import torchvision.transforms as transforms
+import torch.utils.data as data_utils 
 from torch.autograd import Variable
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
+
+
+
+
+class Net(nn.Module):
+	def __init__(self):
+		super(Net, self).__init__()
+		self.conv1 = nn.Conv2d(1, 6, 5)
+		self.pool = nn.MaxPool2d(2, 2)
+		self.conv2 = nn.Conv2d(6, 16, 5)
+		self.fc1 = nn.Linear(16 * 5 * 5, 120)
+		self.fc2 = nn.Linear(120, 84)
+		self.fc3 = nn.Linear(84, 1)
+
+	def forward(self, x):
+		x = self.pool(F.relu(self.conv1(x)))
+		x = self.pool(F.relu(self.conv2(x)))
+		x = x.view(-1, 16 * 5 * 5)
+		x = F.relu(self.fc1(x))
+		x = F.relu(self.fc2(x))
+		x = self.fc3(x)
+		return x
+
+
+
+
+
+
 d = dict.fromkeys(string.ascii_uppercase,[])
 d1 = dict.fromkeys(string.digits,[])
 d.update(d1)
-inp=np.empty((1,1600))
 cnt=0
-target=np.empty((1,1))
+length=0
 for key in d.keys():
 	mypath = 'Classes/'+key+'/';
 	onlyfiles = [f for f in listdir(mypath) if isfile(join(mypath, f))]
+	length+=len(onlyfiles)
 	#print(onlyfiles)
 	d[key] = onlyfiles
+print(length)
+inp=np.zeros((length,40,40))
+target=np.zeros((length,1))
+i=0
 for key in d.keys():
 	lst = []
 	for element in d[key]:
@@ -32,15 +64,61 @@ for key in d.keys():
 		lst.append(temp_path)
 		temp=cv2.imread(temp_path,0)
 		# temp= cv2.resize(temp,(40,40),interpolation=cv2.INTER_CUBIC)
-		temp=temp.ravel()
-		inp=np.vstack((inp,temp))
-		target=np.vstack((target,ord(key)))
-		#print(inp.shape,target.shape)
+		#temp=temp.ravel()
+		#print(type(temp),temp.shape,inp.shape,type(inp))
+		#print(inp.shape)
+		inp[i]=temp
+		target[i]=ord(key)
+		i+=1
+				#print(inp.shape,target.shape)
 	cnt+=1
 	d[key] = lst
-	print(key)
-inp_t = torch.from_numpy(inp)
-target_t = torch.from_numpy(target)
-# print(inp.size(0),target.size(0))
-train = data_utils.TensorDataset(inp_t, target_t) 
-train_loader = data_utils.DataLoader(train, batch_size=50, shuffle=True)
+	print(key,inp.shape)
+
+features=torch.from_numpy(inp)
+targets=torch.from_numpy(target)
+#target=target.reshape((target.shape[0],))
+print(inp.shape,target.shape,type(data_utils.TensorDataset))
+train = data_utils.TensorDataset(features, targets) 
+train_loader = data_utils.DataLoader(train, batch_size=10, shuffle=True)
+
+
+
+net = Net()
+criterion = nn.CrossEntropyLoss()
+optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
+
+for epoch in range(2):  # loop over the dataset multiple times
+
+	running_loss = 0.0
+	for i, data in enumerate(train_loader, 0):
+		# get the inputs
+		inputs, labels = data
+
+		# wrap them in Variable
+		inputs, labels = Variable(inputs), Variable(labels)
+
+		# zero the parameter gradients
+		optimizer.zero_grad()
+
+		# forward + backward + optimize
+		outputs = net(inputs)
+		loss = criterion(outputs, labels)
+		loss.backward()
+		optimizer.step()
+
+		# print statistics
+		running_loss += loss.data[0]
+		if i % 10 == 9:    # print every 2000 mini-batches
+			print('[%d, %5d] loss: %.3f' %
+				  (epoch + 1, i + 1, running_loss / 2000))
+			running_loss = 0.0
+
+print('Finished Training')
+
+
+
+
+
+	
+print(inp.shape)
