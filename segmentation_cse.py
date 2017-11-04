@@ -14,9 +14,9 @@ d.update(d1)
 mypath = '/home/pratik/csecaptcha'
 onlyfiles = [f for f in listdir(mypath) if isfile(join(mypath, f))]
 m = 0;
-for file in onlyfiles:
-	path = '/home/pratik/csecaptcha/'+ file
-	lab = file.upper().split('.')[0]
+for fl in onlyfiles:
+	path = '/home/pratik/csecaptcha/'+ fl
+	lab = fl.upper().split('.')[0]
 	img = cv2.imread(path)
 	print(m,lab)
 	test = np.copy(img)
