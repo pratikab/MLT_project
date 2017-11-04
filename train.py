@@ -89,7 +89,7 @@ targets=torch.from_numpy(target)
 #target=target.reshape((target.shape[0],))
 #print(inp.shape,target.shape,type(data_utils.TensorDataset))
 train = data_utils.TensorDataset(features, targets) 
-train_loader = data_utils.DataLoader(train, batch_size=10, shuffle=True)
+train_loader = data_utils.DataLoader(train, batch_size=20, shuffle=True)
 
 
 
@@ -97,7 +97,7 @@ net = Net()
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
 
-for epoch in range(2):  # loop over the dataset multiple times
+for epoch in range(6):  # loop over the dataset multiple times
 
 	running_loss = 0.0
 	for i, data in enumerate(train_loader, 0):
@@ -122,10 +122,29 @@ for epoch in range(2):  # loop over the dataset multiple times
 		running_loss += loss.data[0]
 		if i % 10 == 9:    # print every 2000 mini-batches
 			print('[%d, %5d] loss: %.3f' %
-				  (epoch + 1, i + 1, running_loss / 10))
+				  (epoch + 1, i + 1, running_loss / 20))
 			running_loss = 0.0
 
 print('Finished Training')
+test_loader=train_loader
+dataiter = iter(test_loader)
+images, labels = dataiter.next()
+# images=images.double()
+# labels=labels.long()
+outputs = net(Variable(images).float())
+correct = 0
+total = 0
+for data in test_loader:
+    images, labels = data
+    outputs = net(Variable(images).float())
+    _, predicted = torch.max(outputs.data, 1)
+    labels=labels.long()
+    total += labels.size(0)
+    correct += (predicted == labels).sum()
+
+print('Accuracy of the network on the 6000 test images: %d %%' % (
+    100 * correct / total))
+
 
 
 
