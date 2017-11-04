@@ -71,13 +71,13 @@ for key in d.keys():
 		#print(type(temp),temp.shape,inp.shape,type(inp))
 		#print(inp.shape)
 		inp[i][0]=temp
-		inp[i][0]=temp
 		if (ord(key)<65):
 			num=ord(key)-48
 		else:
 			num=ord(key)-55
 		# target[i][num]=1
 		target[i]=num
+		#print(target[i])
 		i+=1
 				#print(inp.shape,target.shape)
 	cnt+=1
@@ -87,7 +87,7 @@ for key in d.keys():
 features=torch.from_numpy(inp)
 targets=torch.from_numpy(target)
 #target=target.reshape((target.shape[0],))
-#print(inp.shape,target.shape,type(data_utils.TensorDataset))
+print(inp.shape,target.shape,type(data_utils.TensorDataset))
 train = data_utils.TensorDataset(features, targets) 
 train_loader = data_utils.DataLoader(train, batch_size=10, shuffle=True)
 
@@ -106,7 +106,7 @@ for epoch in range(2):  # loop over the dataset multiple times
 
 		# wrap them in Variable
 		inputs, labels = Variable(inputs), Variable(labels)
-		#print(labels)
+		print(labels)
 
 		# zero the parameter gradients
 		optimizer.zero_grad()
@@ -122,7 +122,7 @@ for epoch in range(2):  # loop over the dataset multiple times
 		running_loss += loss.data[0]
 		if i % 10 == 9:    # print every 2000 mini-batches
 			print('[%d, %5d] loss: %.3f' %
-				  (epoch + 1, i + 1, running_loss / 10))
+				  (epoch + 1, i + 1, running_loss / 2000))
 			running_loss = 0.0
 
 print('Finished Training')
