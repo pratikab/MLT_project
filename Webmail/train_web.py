@@ -19,19 +19,23 @@ from model import *
 
 
 
-label=np.load('label_metric.npy')
+label=np.load('label1-2501.npy').item()
 mypath = 'webmail_data/';
 #onlyfiles = [f for f in listdir(mypath) if isfile(join(mypath, f))]
-length=1000
-inp=np.ones((length,204,84,3))
-target=np.zeros((length,))
-for i in range (1,1001):
+length=len(label.keys())
+inp=np.ones((length,84,204,3))
+target=np.zeros((length,),dtype=int)
+for i in range (1,length+1):
 	temp_path= mypath+str(i)+'.jpg'
 	temp=cv2.imread(temp_path)
-	inp[i]=temp
-	target[i]=len(label[i])-4
+	#print(temp.shape)
+	inp[i-1]=temp
+	target[i-1]=int(len(label[i])-3)
+	#print(target[i-1])
 
 
+inp=np.swapaxes(inp,1,3)
+print(inp.shape)
 features=torch.from_numpy(inp)
 targets=torch.from_numpy(target)
 train = data_utils.TensorDataset(features, targets) 
@@ -71,24 +75,24 @@ for epoch in range(10):  # loop over the dataset multiple times
 print('Finished Training')
 torch.save(net, 'trainmodel_web.pt')
 
-# test_loader=train_loader
-# dataiter = iter(test_loader)
-# images, labels = dataiter.next()
-# # images=images.double()
-# # labels=labels.long()
-# outputs = net(Variable(images).float())
-# correct = 0
-# total = 0
-# for data in test_loader:
-#     images, labels = data
-#     outputs = net(Variable(images).float())
-#     _, predicted = torch.max(outputs.data, 1)
-#     labels=labels.long()
-#     total += labels.size(0)
-#     correct += (predicted == labels).sum()
+test_loader=train_loader
+dataiter = iter(test_loader)
+images, labels = dataiter.next()
+# images=images.double()
+# labels=labels.long()
+outputs = net(Variable(images).float())
+correct = 0
+total = 0
+for data in test_loader:
+    images, labels = data
+    outputs = net(Variable(images).float())
+    _, predicted = torch.max(outputs.data, 1)
+    labels=labels.long()
+    total += labels.size(0)
+    correct += (predicted == labels).sum()
 
-# print('Training Accuracy: %d %%' % (
-#     100 * correct / total))
+print('Training Accuracy: %d %%' % (
+    100 * correct / total))
 
 
 
