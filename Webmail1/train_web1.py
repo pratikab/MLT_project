@@ -128,3 +128,49 @@ for epoch in range(10):  # loop over the dataset multiple times
 print('Finished Training')
 torch.save(net, 'trainmodel_web1.pt')
 
+test_loader=train_loader
+dataiter = iter(test_loader)
+images, labels = dataiter.next()
+# images=images.double()
+# labels=labels.long()
+outputs = net(Variable(images).float())
+correct = 0
+total = 0
+for data in test_loader:
+    images, labels = data
+    outputs = net(Variable(images).float())
+    _, predicted = torch.max(outputs.data, 1)
+    labels=labels.long()
+    total += labels.size(0)
+    correct += (predicted == labels).sum()
+
+print('Training Accuracy: %d %%' % (
+    100 * correct / total))
+
+
+
+class_correct = np.zeros(36,)
+class_total = np.zeros(36,)
+for data in test_loader:
+    images, labels = data
+    outputs = net(Variable(images).float())
+    _, predicted = torch.max(outputs.data, 1)
+    #print(predicted.numpy().ravel(),labels.numpy())
+    d=predicted.numpy().ravel()
+    q=labels.numpy()
+    #print("hdvbvjs")
+    c = 1*((d==q).squeeze())
+    #print(c)
+    for i in range(0,len(c)):
+        label = int(q[i])
+        #print(label)
+        class_correct[label] += c[i]
+        class_total[label] += 1
+
+print(class_correct,class_total)
+
+for i in range(1,36):
+    print('Accuracy of %5s : %2d %%' % (
+        i, 100 * class_correct[i] / class_total[i]))
+
+
