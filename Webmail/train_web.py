@@ -33,10 +33,10 @@ for i in range (1,length+1):
 	target[i-1]=int(len(label[i])-3)
 	#print(target[i-1])
 
-
 inp=np.swapaxes(inp,1,3)
 print(inp.shape)
 features=torch.from_numpy(inp)
+print(features[121])
 targets=torch.from_numpy(target)
 train = data_utils.TensorDataset(features, targets) 
 train_loader = data_utils.DataLoader(train, batch_size=20, shuffle=True)
@@ -44,7 +44,9 @@ net = Net()
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
 
-for epoch in range(10):  # loop over the dataset multiple times
+print(train_loader)
+
+for epoch in range(5):  # loop over the dataset multiple times
 
 	running_loss = 0.0
 	for i, data in enumerate(train_loader, 0):
