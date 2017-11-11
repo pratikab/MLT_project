@@ -17,7 +17,7 @@ import torch.optim as optim
 from model_len import *
 
 
-net_test=Net()
+net_test=Net_len()
 inp=np.ones((1,3,204,84))
 net_test=torch.load('train_len_web.pt')
 path=str(input('please enter file name: '))

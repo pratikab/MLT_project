@@ -40,7 +40,7 @@ features=torch.from_numpy(inp)
 targets=torch.from_numpy(target)
 train = data_utils.TensorDataset(features, targets) 
 train_loader = data_utils.DataLoader(train, batch_size=20, shuffle=True)
-net = Net()
+net = Net_len()
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
 
