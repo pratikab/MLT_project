@@ -25,7 +25,7 @@ class Net(nn.Module):
 		#self.conv3 = nn.Conv2d(16,20,5)
 		# self.pool = nn.MaxPool2d(2, 2)
 		#self.fc1 = nn.Linear(20 * 22 * 7, 120)
-		self.fc1 = nn.Linear(16 * 18 * 48, 120)
+		self.fc1 = nn.Linear(16 * 12 * 17, 120)
 		self.fc2 = nn.Linear(120, 84)
 		self.fc3 = nn.Linear(84,2)
 
@@ -35,7 +35,7 @@ class Net(nn.Module):
 		#x = self.pool(F.relu(self.conv3(x)))
 		# x = F.relu(self.conv1(x))
 		# x = F.relu(self.conv2(x))
-		x = x.view(-1, 16 * 18 * 48)
+		x = x.view(-1, 16 * 12 * 17)
 		x = F.relu(self.fc1(x))
 		x = F.relu(self.fc2(x))
 		x = self.fc3(x)

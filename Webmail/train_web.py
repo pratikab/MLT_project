@@ -18,35 +18,86 @@ from model import *
 
 
 
+'''class Net(nn.Module):
+	def __init__(self):
+		super(Net, self).__init__()
+		self.conv1 = nn.Conv2d(1, 6, 5)
+		self.pool = nn.MaxPool2d(2, 2)
+		self.conv2 = nn.Conv2d(6, 16, 5)
+		# self.pool = nn.MaxPool2d(2, 2)
+		self.fc1 = nn.Linear(16 * 7 * 7, 120)
+		self.fc2 = nn.Linear(120, 84)
+		self.fc3 = nn.Linear(84,36)
 
-label=np.load('label1-2501.npy').item()
-mypath = 'webmail_data/';
-#onlyfiles = [f for f in listdir(mypath) if isfile(join(mypath, f))]
-length=len(label.keys())
-inp=np.ones((length,84,204,3))
-target=np.zeros((length,),dtype=int)
-for i in range (1,length+1):
-	temp_path= mypath+str(i)+'.jpg'
-	temp=cv2.imread(temp_path)
-	#print(temp.shape)
-	inp[i-1]=temp
-	target[i-1]=int(len(label[i])-3)
-	#print(target[i-1])
+	def forward(self, x):
+		x = self.pool(F.relu(self.conv1(x)))
+		x = self.pool(F.relu(self.conv2(x)))
+		# x = F.relu(self.conv1(x))
+		# x = F.relu(self.conv2(x))
+		x = x.view(-1, 16 * 7 * 7)
+		x = F.relu(self.fc1(x))
+		x = F.relu(self.fc2(x))
+		x = self.fc3(x)
+		return x
 
-inp=np.swapaxes(inp,1,3)
-print(inp.shape)
+'''
+
+
+
+
+d = dict.fromkeys(string.ascii_uppercase,[])
+d1 = dict.fromkeys(string.digits,[])
+d.update(d1)
+cnt=0
+length=0
+for key in d.keys():
+	mypath = 'Classes/'+key+'/';
+	onlyfiles = [f for f in listdir(mypath) if isfile(join(mypath, f))]
+	length+=len(onlyfiles)
+	#print(onlyfiles)
+	d[key] = onlyfiles
+print(length)
+inp=np.ones((length,1,40,40))
+target=np.zeros((length,))
+i=0
+for key in d.keys():
+	lst = []
+	for element in d[key]:
+		temp_path='Classes/'+key+'/'+ element
+		lst.append(temp_path)
+		temp=cv2.imread(temp_path,0)
+		# temp= cv2.resize(temp,(40,40),interpolation=cv2.INTER_CUBIC)
+		#temp=temp.ravel()
+		#print(type(temp),temp.shape,inp.shape,type(inp))
+		#print(inp.shape)
+		inp[i][0]=temp
+		inp[i][0]=temp
+		if (ord(key)<65):
+			num=ord(key)-48
+		else:
+			num=ord(key)-55
+		# target[i][num]=1
+		target[i]=num
+		i+=1
+				#print(inp.shape,target.shape)
+	cnt+=1
+	d[key] = lst
+	print(key,inp.shape)
+
 features=torch.from_numpy(inp)
-print(features[121])
 targets=torch.from_numpy(target)
+#target=target.reshape((target.shape[0],))
+#print(inp.shape,target.shape,type(data_utils.TensorDataset))
 train = data_utils.TensorDataset(features, targets) 
 train_loader = data_utils.DataLoader(train, batch_size=20, shuffle=True)
+
+
+
 net = Net()
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
 
-print(train_loader)
-
-for epoch in range(5):  # loop over the dataset multiple times
+for epoch in range(10):  # loop over the dataset multiple times
 
 	running_loss = 0.0
 	for i, data in enumerate(train_loader, 0):
@@ -69,13 +120,13 @@ for epoch in range(5):  # loop over the dataset multiple times
 
 		# print statistics
 		running_loss += loss.data[0]
-		if i % 20 == 19:    # print every 2000 mini-batches
+		if i % 10 == 9:    # print every 2000 mini-batches
 			print('[%d, %5d] loss: %.3f' %
-				  (epoch + 1, i + 1, running_loss / 20))
+				  (epoch + 1, i + 1, running_loss / 10))
 			running_loss = 0.0
 
 print('Finished Training')
-torch.save(net, 'trainmodel_web.pt')
+torch.save(net, 'trainmodel_web1.pt')
 
 test_loader=train_loader
 dataiter = iter(test_loader)
@@ -98,28 +149,28 @@ print('Training Accuracy: %d %%' % (
 
 
 
-# class_correct = np.zeros(36,)
-# class_total = np.zeros(36,)
-# for data in test_loader:
-#     images, labels = data
-#     outputs = net(Variable(images).float())
-#     _, predicted = torch.max(outputs.data, 1)
-#     #print(predicted.numpy().ravel(),labels.numpy())
-#     d=predicted.numpy().ravel()
-#     q=labels.numpy()
-#     #print("hdvbvjs")
-#     c = 1*((d==q).squeeze())
-#     #print(c)
-#     for i in range(0,len(c)):
-#         label = int(q[i])
-#         #print(label)
-#         class_correct[label] += c[i]
-#         class_total[label] += 1
+class_correct = np.zeros(36,)
+class_total = np.zeros(36,)
+for data in test_loader:
+    images, labels = data
+    outputs = net(Variable(images).float())
+    _, predicted = torch.max(outputs.data, 1)
+    #print(predicted.numpy().ravel(),labels.numpy())
+    d=predicted.numpy().ravel()
+    q=labels.numpy()
+    #print("hdvbvjs")
+    c = 1*((d==q).squeeze())
+    #print(c)
+    for i in range(0,len(c)):
+        label = int(q[i])
+        #print(label)
+        class_correct[label] += c[i]
+        class_total[label] += 1
 
-# print(class_correct,class_total)
+print(class_correct,class_total)
 
-# for i in range(1,36):
-#     print('Accuracy of %5s : %2d %%' % (
-#         i, 100 * class_correct[i] / class_total[i]))
+for i in range(1,36):
+    print('Accuracy of %5s : %2d %%' % (
+        i, 100 * class_correct[i] / class_total[i]))
 
 
