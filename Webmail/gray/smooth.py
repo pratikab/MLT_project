@@ -27,8 +27,8 @@ def smooth(img):
 	for i in range(0, nb_components):
 	    if sizes[i] >= min_size:
 	        img2[output == i + 1] = 255
-	img3 = np.dstack((img2,img2,img2))
-	return img3
+	#img3 = np.dstack((img2,img2,img2))
+	return img2
 
 # plt.subplot(3,3,1),plt.imshow(img,'gray')
 # plt.subplot(3,3,2),plt.imshow(gimg,'gray')
