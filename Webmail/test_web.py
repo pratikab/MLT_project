@@ -18,11 +18,16 @@ from model_len import *
 from model import *
 import segmentation_single_web as sc
 
+dic={}
 
+
+
+for i in range (2501,5001):
 	net_len=Net_len()
 	inp=np.ones((1,3,204,84))
 	net_len=torch.load('train_len_web.pt')
-	path=str(input('please enter file name: '))
+	#path=str(input('please enter file name: '))
+	path = str('webmail_data/'+str(i)+'.jpg')
 	temp=cv2.imread(path)
 	temp=np.swapaxes(temp,0,2)
 	inp[0]=temp
@@ -82,7 +87,6 @@ import segmentation_single_web as sc
 	test_loader = data_utils.DataLoader(test, shuffle=False)
 
 
-
 	dataiter = iter(test_loader)
 	images, labels = dataiter.next()
 	# images=images.double()
@@ -90,6 +94,7 @@ import segmentation_single_web as sc
 	outputs = net_test(Variable(images).float())
 	correct = 0
 	total = 0
+	lst = []
 	for data in test_loader:
 		images, labels = data
 		outputs = net_test(Variable(images).float())
@@ -100,6 +105,12 @@ import segmentation_single_web as sc
 		temp=predicted.numpy()
 		#print(temp)
 		if (temp<10):
-			print(np.asscalar(temp))
+			lst.append(chr(temp+48))
 		else:
-			print(chr(temp+55))
+			lst.append(chr(temp+55))
+	lst=''.join(lst)
+	dic[i]=lst
+	print(i)
+
+#print(dic)
+np.save('label2502_5000.npy',dic)

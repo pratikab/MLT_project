@@ -14,7 +14,7 @@ from torch.autograd import Variable
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
-from model import *
+from model_gray import *
 
 
 
@@ -25,7 +25,7 @@ d.update(d1)
 cnt=0
 length=0
 for key in d.keys():
-	mypath = 'Classes/'+key+'/';
+	mypath = 'Classes_smooth/'+key+'/';
 	onlyfiles = [f for f in listdir(mypath) if isfile(join(mypath, f))]
 	length+=len(onlyfiles)
 	#print(onlyfiles)
@@ -68,7 +68,7 @@ train_loader = data_utils.DataLoader(train, batch_size=20, shuffle=True)
 
 
 
-net = Net()
+net = Net_gray()
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
 
@@ -101,7 +101,7 @@ for epoch in range(10):  # loop over the dataset multiple times
 			running_loss = 0.0
 
 print('Finished Training')
-torch.save(net, 'trainmodel_web.pt')
+torch.save(net, 'trainmodel_gray_web.pt')
 
 test_loader=train_loader
 dataiter = iter(test_loader)
