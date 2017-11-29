@@ -1,4 +1,3 @@
-
 import numpy as np
 import cv2
 import sys
@@ -91,3 +90,4 @@ for data in test_loader:
 
 print('Accuracy of the network on the test images: %d %%' % (
     100 * correct / total))
+

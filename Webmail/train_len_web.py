@@ -19,10 +19,11 @@ from model_len import *
 
 
 
-label=np.load('label1-2501.npy').item()
+label=np.load('label1_4000.npy').item()
 mypath = 'webmail_data/';
 #onlyfiles = [f for f in listdir(mypath) if isfile(join(mypath, f))]
 length=len(label.keys())
+print(length)
 inp=np.ones((length,84,204,3))
 target=np.zeros((length,),dtype=int)
 for i in range (1,length+1):

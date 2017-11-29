@@ -97,7 +97,7 @@ net = Net()
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
 
-for epoch in range(10):  # loop over the dataset multiple times
+for epoch in range(13):  # loop over the dataset multiple times
 
 	running_loss = 0.0
 	for i, data in enumerate(train_loader, 0):
@@ -149,28 +149,29 @@ print('Training Accuracy: %d %%' % (
 
 
 
-class_correct = np.zeros(36,)
-class_total = np.zeros(36,)
-for data in test_loader:
-    images, labels = data
-    outputs = net(Variable(images).float())
-    _, predicted = torch.max(outputs.data, 1)
-    #print(predicted.numpy().ravel(),labels.numpy())
-    d=predicted.numpy().ravel()
-    q=labels.numpy()
-    #print("hdvbvjs")
-    c = 1*((d==q).squeeze())
-    #print(c)
-    for i in range(0,len(c)):
-        label = int(q[i])
-        #print(label)
-        class_correct[label] += c[i]
-        class_total[label] += 1
 
-print(class_correct,class_total)
+# class_correct = np.zeros(36,)
+# class_total = np.zeros(36,)
+# for data in test_loader:
+#     images, labels = data
+#     outputs = net(Variable(images).float())
+#     _, predicted = torch.max(outputs.data, 1)
+#     #print(predicted.numpy().ravel(),labels.numpy())
+#     d=predicted.numpy().ravel()
+#     q=labels.numpy()
+#     #print("hdvbvjs")
+#     c = 1*((d==q).squeeze())
+#     #print(c)
+#     for i in range(0,len(c)):
+#         label = int(q[i])
+#         #print(label)
+#         class_correct[label] += c[i]
+#         class_total[label] += 1
 
-for i in range(1,36):
-    print('Accuracy of %5s : %2d %%' % (
-        i, 100 * class_correct[i] / class_total[i]))
+# print(class_correct,class_total)
+
+# for i in range(1,36):
+#     print('Accuracy of %5s : %2d %%' % (
+#         i, 100 * class_correct[i] / class_total[i]))
 
 

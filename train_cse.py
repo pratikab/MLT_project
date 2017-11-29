@@ -90,7 +90,7 @@ targets=torch.from_numpy(target)
 #target=target.reshape((target.shape[0],))
 #print(inp.shape,target.shape,type(data_utils.TensorDataset))
 train = data_utils.TensorDataset(features, targets) 
-train_loader = data_utils.DataLoader(train, batch_size=20, shuffle=True)
+train_loader = data_utils.DataLoader(train, batch_size=25, shuffle=True)
 
 
 
@@ -98,7 +98,7 @@ net = Net()
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
 
-for epoch in range(1):  # loop over the dataset multiple times
+for epoch in range(2):  # loop over the dataset multiple times
 
 	running_loss = 0.0
 	for i, data in enumerate(train_loader, 0):
@@ -127,24 +127,24 @@ for epoch in range(1):  # loop over the dataset multiple times
 			running_loss = 0.0
 
 print('Finished Training')
-# test_loader=train_loader
-# dataiter = iter(test_loader)
-# images, labels = dataiter.next()
-# # images=images.double()
-# # labels=labels.long()
-# outputs = net(Variable(images).float())
-# correct = 0
-# total = 0
-# for data in test_loader:
-#     images, labels = data
-#     outputs = net(Variable(images).float())
-#     _, predicted = torch.max(outputs.data, 1)
-#     labels=labels.long()
-#     total += labels.size(0)
-#     correct += (predicted == labels).sum()
+test_loader=train_loader
+dataiter = iter(test_loader)
+images, labels = dataiter.next()
+# images=images.double()
+# labels=labels.long()
+outputs = net(Variable(images).float())
+correct = 0
+total = 0
+for data in test_loader:
+    images, labels = data
+    outputs = net(Variable(images).float())
+    _, predicted = torch.max(outputs.data, 1)
+    labels=labels.long()
+    total += labels.size(0)
+    correct += (predicted == labels).sum()
 
-# print('Accuracy of the network on the 6000 test images: %d %%' % (
-#     100 * correct / total))
+print('Accuracy of the network on the 6000 test images: %d %%' % (
+    100 * correct / total))
 # model= Net()
 # model.save_state_dict('mytrain_final.pt')
 torch.save(net, 'mytrain_final.pt')
