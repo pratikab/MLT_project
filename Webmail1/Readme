@@ -1,7 +1,0 @@
-CAPTCHA's are from https://webmail1.iitk.ac.in/squirrelmail/src/login.php
-They were grabbed using grab.py
-They were manually labelled using label.py
-CAPTCHA's were segement using segmentation_web1.py
-Classes folder contains the individual characters in separate folder for training
-Classes_test folder contains the individual characters in separate folder for testing
-
