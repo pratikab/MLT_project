@@ -91,5 +91,5 @@ for data in test_loader:
     total += labels.size(0)
     correct += (predicted == labels).sum()
 
-print('Training Accuracy: %d %%' % (
+print('Testing Accuracy: %d %%' % (
     100 * correct / total))
